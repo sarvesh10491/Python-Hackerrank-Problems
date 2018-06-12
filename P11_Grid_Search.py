@@ -6,6 +6,14 @@ import random
 import re
 import sys
 
+# Function to find all possible starting indices of pattern substring in main string
+def found_at(parentstr, substr):
+	indices=[]
+	i = parentstr.find(substr)
+	while i >= 0:
+		indices.append(i)
+		i = parentstr.find(substr, i+1)
+	return indices
 
 
 def gridSearch(G, P):
@@ -15,9 +23,11 @@ def gridSearch(G, P):
 	while gi<(len(G)-len(P)+1):
 		idx=G[gi].find(P[pi])
 		if idx!=-1:				# 1st line of pattern found in one of the line
-			ps = [pat.start() for pat in re.finditer(re.escape(P[pi]), G[gi])]	# Find indices of all matching paterns in line
-			# print(ps)
-			for k in ps:
+			# Find indices of all matching paterns in line
+			# ps = [pat.start() for pat in re.finditer(re.escape(P[pi]), G[gi])]	<= This didnt work as it skips current successful pattern in next search
+			ps = found_at(G[gi],P[pi])
+			# print("Found in line",gi,"at",ps)
+			for k in ps:		# For each index as starting point
 				idx=k
 				tgi=gi
 				tpi=0
@@ -29,14 +39,14 @@ def gridSearch(G, P):
 						tpi+=1
 						if tpi==len(P):
 							return ("YES")
-				gi+=1
+			gi+=1
 		else:
 			gi+=1
 
 	return ("NO")
 
 
-# input
+# Input
 if __name__ == '__main__':
     t = int(input())
 
