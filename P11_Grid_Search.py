@@ -15,17 +15,21 @@ def gridSearch(G, P):
 	while gi<(len(G)-len(P)+1):
 		idx=G[gi].find(P[pi])
 		if idx!=-1:				# 1st line of pattern found in one of the line
-			tgi=gi
-			tpi=0
-			while tpi<len(P):	# Check all subsequent lines in grid to see if respective subsequent lines of pattern also exist in them
-				tidx=G[tgi+tpi].find(P[tpi])
-				if tidx!=idx:
-					break
-				else:
-					tpi+=1
-					if tpi==len(P):
-						return ("YES")
-			gi+=1
+			ps = [pat.start() for pat in re.finditer(re.escape(P[pi]), G[gi])]	# Find indices of all matching paterns in line
+			# print(ps)
+			for k in ps:
+				idx=k
+				tgi=gi
+				tpi=0
+				while tpi<len(P):	# Check all subsequent lines in grid to see if respective subsequent lines in pattern also exist in them
+					tidx=G[tgi+tpi].find(P[tpi],idx)
+					if tidx!=idx:
+						break
+					else:
+						tpi+=1
+						if tpi==len(P):
+							return ("YES")
+				gi+=1
 		else:
 			gi+=1
 
